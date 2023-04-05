@@ -1,0 +1,79 @@
+import argparse
+import math
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--type", choices=["annuity", "diff"])
+parser.add_argument("--payment")
+parser.add_argument("--principal")
+parser.add_argument("--periods")
+parser.add_argument("--interest")
+
+args = parser.parse_args()
+if str(args.type) == "annuity":
+    if str(args.principal) != "None" and str(args.payment) != "None" and str(args.interest) != "None":
+        i = float(args.interest) / 100 / 12
+        number_of_payments = math.ceil(math.log((int(args.payment) / (int(args.payment)
+                                                                      - i * int(args.principal))), (1 + i)))
+        year = number_of_payments // 12
+        month = number_of_payments % 12
+        overpayment = (year * 12 + month) * int(args.payment) - int(args.principal)
+
+        if year == 0 and month == 1:
+            print('It will take 1 month to repay this loan!')
+        elif year == 0 and (month > 1 or month == 0):
+            print('It will take', month, 'months to repay this loan!')
+        elif year == 1 and month == 0:
+            print('It will take 1 year to repay this loan!')
+        elif year > 1 and month == 0:
+            print('It will take', year, 'years to repay this loan!')
+        elif year > 1 and month == 1:
+            print('It will take', year, 'years and 1 month to repay this loan!')
+        else:
+            print('It will take', year, 'years and', month, 'months to repay this loan!')
+
+        print()
+        print('Overpayment =', overpayment)
+
+    elif str(args.principal) != "None" and str(args.periods) != "None" and str(args.interest) != "None":
+        i = float(args.interest) / 100 / 12
+        x = pow((1 + i), int(args.periods))
+        monthly_payment = math.ceil(float(args.principal) * ((i * x) / (x - 1)))
+        overpayment = monthly_payment * int(args.periods) - int(args.principal)
+        print('Your monthly payment =', monthly_payment, '!')
+        print()
+        print('Overpayment =', overpayment)
+
+    elif str(args.payment) != "None" and str(args.periods) != "None" and str(args.interest) != "None":
+        i = float(args.interest) / 100 / 12
+        x = pow((1 + i), int(args.periods))
+        prince = math.ceil(float(args.payment) / ((i * x) / (x - 1)))
+        overpayment = int(args.payment) * int(args.periods) - prince
+        print('Your loan principal =', prince, '!')
+        print()
+        print('Overpayment =', overpayment)
+
+    else:
+        print('Incorrect parameters.')
+
+elif str(args.type) == "diff":
+    if str(args.principal) != "None" and str(args.periods) != "None" and str(args.interest) != "None":
+        i = float(args.interest) / 100 / 12
+        j = 1
+        overpayment = 0
+        while j <= int(args.periods):
+            diff_pay = math.ceil(float(args.principal) / int(args.periods)
+                                 + i * (float(args.principal) - (float(args.principal) * (j - 1))
+                                        / int(args.periods)))
+            print('Month', j, ': payment is', diff_pay)
+            overpayment += diff_pay
+            j += 1
+
+        overpayment = overpayment - int(args.principal)
+        print()
+        print('Overpayment =', overpayment)
+
+    else:
+        print('Incorrect parameters.')
+
+else:
+    print('Incorrect parameters.')
