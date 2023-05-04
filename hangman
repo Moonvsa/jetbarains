@@ -1,0 +1,67 @@
+import random
+
+lower = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+         'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
+         's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}
+words = ['python', 'java', 'swift', 'javascript']
+win = 0
+lost = 0
+k = 0
+
+print('H A N G M A N\n')
+print('Type "play" to play the game, "results" to show the scoreboard, and "exit" to quit:')
+
+while k != 1:
+    menu = str(input())
+    if menu == 'results':
+        print('You won:', win, 'times.', '\nYou lost:', lost, 'times.')
+        print('Type "play" to play the game, "results" to show the scoreboard, and "exit" to quit:')
+    elif menu == 'exit':
+        break
+    elif menu == 'play':
+        y = random.choice(words)
+        hidden = len(y) * '-'
+        i = 1
+        choices = ''
+        while i > 0:
+            if i < 9:
+                if hidden == y:
+                    print(hidden, '\nYou guessed the word', hidden + '!', '\nYou survived!')
+                    win += 1
+                    print('Type "play" to play the game, "results" to show the scoreboard, and "exit" to quit:')
+                    break
+            else:
+                print('You lost!')
+                lost += 1
+                print('Type "play" to play the game, "results" to show the scoreboard, and "exit" to quit:')
+                break
+
+            print(hidden)
+            print('Input a letter:')
+            letter = str(input())
+
+            if len(letter) != 1:
+                print('Please, input a single letter.')
+            elif letter not in lower:
+                print('Please, enter a lowercase letter from the English alphabet.')
+            elif letter in set(choices):
+                print("You've already guessed this letter.")
+            else:
+                if letter in set(y):
+                    choices += letter
+                    j = 0
+                    while j != len(y):
+                        if y[j] == letter:
+                            hidden_list = list(hidden)
+                            hidden_list[j] = letter
+                            hidden = ''.join(hidden_list)
+                        else:
+                            j += 1
+                            continue
+                        j += 1
+                else:
+                    print("That letter doesn't appear in the word.")
+                    choices += letter
+                    i += 1
+    else:
+        print('Type "play" to play the game, "results" to show the scoreboard, and "exit" to quit:')
