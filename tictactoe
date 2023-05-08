@@ -1,0 +1,68 @@
+M = [['_', '_', '_'], ['_', '_', '_'], ['_', '_', '_']]
+turn = 1
+
+print('---------')
+print('|', ' '.join(M[0]).replace('_', ' '), '|')
+print('|', ' '.join(M[1]).replace('_', ' '), '|')
+print('|', ' '.join(M[2]).replace('_', ' '), '|')
+print('---------')
+
+while True:
+    vertical_1 = ''
+    vertical_2 = ''
+    vertical_3 = ''
+    diagonal_left = ''
+    diagonal_right = ''
+    os = 0
+    xs = 0
+    move = input().split(' ')
+    try:
+        if M[int(move[0]) - 1][int(move[1]) - 1] != '_':
+            print('This cell is occupied! Choose another one!')
+            continue
+        else:
+            if turn % 2 == 1:
+                M[int(move[0]) - 1][int(move[1]) - 1] = 'X'
+            else:
+                M[int(move[0]) - 1][int(move[1]) - 1] = 'O'
+    except (TypeError, ValueError):
+        print('You should enter numbers!')
+    except IndexError:
+        print('Coordinates should be from 1 to 3!')
+    else:
+        print('---------')
+        print('|', ' '.join(M[0]).replace('_', ' '), '|')
+        print('|', ' '.join(M[1]).replace('_', ' '), '|')
+        print('|', ' '.join(M[2]).replace('_', ' '), '|')
+        print('---------')
+
+        turn += 1
+        vertical_1 = vertical_1 + M[0][0] + M[1][0] + M[2][0]
+        vertical_2 = vertical_2 + M[0][1] + M[1][1] + M[2][1]
+        vertical_3 = vertical_3 + M[0][2] + M[1][2] + M[2][2]
+        diagonal_left = diagonal_left + M[0][0] + M[1][1] + M[2][2]
+        diagonal_right = diagonal_right + M[0][2] + M[1][1] + M[2][0]
+        if ''.join(M[0]) == 'XXX' or ''.join(M[1]) == 'XXX' or ''.join(M[2]) == 'XXX' \
+                or vertical_1 == 'XXX' or vertical_2 == 'XXX' \
+                or vertical_3 == 'XXX' or diagonal_left == 'XXX' \
+                or diagonal_right == 'XXX':
+            xs += 1
+
+        if ''.join(M[0]) == 'OOO' or ''.join(M[1]) == 'OOO' or ''.join(M[2]) == 'OOO' \
+                or vertical_1 == 'OOO' or vertical_2 == 'OOO' \
+                or vertical_3 == 'OOO' or diagonal_left == 'OOO' \
+                or diagonal_right == 'OOO':
+            os += 1
+
+        if xs > os:
+            print('X wins')
+            break
+        elif xs < os:
+            print('O wins')
+            break
+        else:
+            s = ''.join(M[0]) + ''.join(M[1]) + ''.join(M[2])
+            if '_' not in set(s):
+                print('Draw')
+                break
+                
