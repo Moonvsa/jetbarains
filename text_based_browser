@@ -1,0 +1,61 @@
+import os
+import sys
+import requests
+from collections import deque
+from bs4 import BeautifulSoup
+from colorama import Fore
+
+dir_path = sys.argv[1]
+opened_pages = deque()
+
+if not os.access(dir_path, os.F_OK):
+    os.mkdir(dir_path)
+
+
+def get_site_content(url):
+    r = requests.get(url)
+    soup = BeautifulSoup(r.content, 'html.parser')
+    soup.prettify()
+    for i in soup.find_all("a"):
+        i.string = "".join([Fore.BLUE, i.get_text(), Fore.RESET])
+    return soup.get_text()
+
+
+def save_site_content(data, page):
+    k = get_shortcut(page)
+    opened_pages.append(k)
+    with open(os.path.join(dir_path, k), 'w', encoding='utf=8') as f:
+        f.write(data)
+
+
+def go_back():
+    opened_pages.pop()
+    with open(os.path.join(dir_path, opened_pages.pop()), 'r', encoding='utf=8') as f:
+        print(f.read())
+
+
+def go_site(site):
+    address = site if site.startswith("https://") else f'https://{site}'
+    site_content = get_site_content(address)
+    save_site_content(site_content, site)
+    print(site_content)
+
+
+def get_shortcut(url):
+    page = ''.join(url.split('.')[0])
+    return page
+
+
+while True:
+    line = str(input())
+    if line == 'exit':
+        break
+    elif line == 'back':
+        if len(opened_pages) != 0:
+            go_back()
+        else:
+            ...
+    elif '.' in line:
+        go_site(line)
+    else:
+        print('Invalid URL')
